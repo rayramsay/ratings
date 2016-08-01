@@ -13,7 +13,7 @@ db = SQLAlchemy()
 # Model definitions
 
 class User(db.Model):
-    """User of ratings website."""
+    """User object for ratings website."""
 
     __tablename__ = "users"
 
@@ -24,27 +24,24 @@ class User(db.Model):
     zipcode = db.Column(db.String(15), nullable=True)
 
 class Movie(db.Model):
-    """Movie information."""
+    """Movie object for ratings website."""
 
     __tablename__ = "movies"
 
     movie_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
-    title = db.Column(db.String(64), nullable=True)
+    title = db.Column(db.String(64), nullable=False)
     released_at = db.Column(db.DateTime, nullable=True)
     imdb_url = db.Column(db.String(128), nullable=True)
 
 class Rating(db.Model):
-    """Movie ratings table."""
+    """Rating object for ratings website."""
 
     __tablename__ = "ratings"
 
     rating_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
-    movie_id = db.Column(db.Integer, nullable=True)
-    user_id = db.Column(db.Integer, nullable=True)
-    score = db.Column(db.Integer, nullable=True)
-
-# Put your Movie and Rating model classes here.
-
+    movie_id = db.Column(db.Integer, nullable=False)
+    user_id = db.Column(db.Integer, nullable=False)
+    score = db.Column(db.Integer, nullable=False)
 
 ##############################################################################
 # Helper functions
