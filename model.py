@@ -36,9 +36,9 @@ class Movie(db.Model):
     __tablename__ = "movies"
 
     movie_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
-    title = db.Column(db.String(64), nullable=False)
+    title = db.Column(db.String(128), nullable=False)
     released_at = db.Column(db.DateTime, nullable=True)
-    imdb_url = db.Column(db.String(128), nullable=True)
+    imdb_url = db.Column(db.String(192), nullable=True)
 
     def __repr__(self):
         """Provide a human-readable representation of an instance of a movie."""
