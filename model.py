@@ -53,9 +53,22 @@ class Rating(db.Model):
     __tablename__ = "ratings"
 
     rating_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
-    movie_id = db.Column(db.Integer, nullable=False)
-    user_id = db.Column(db.Integer, nullable=False)
+
+    # Make movie_id and user_id foreign keys, so we can create relationships
+    # for ratings -> movies and ratings -> users.
+    movie_id = db.Column(db.Integer, db.ForeignKey("movies.movie_id"))
+    user_id = db.Column(db.Integer, db.ForeignKey("users.user_id"))
+
     score = db.Column(db.Integer, nullable=False)
+
+    # Define relationship between ratings and users
+    user = db.relationship("User", backref=db.backref("ratings", 
+                                                      order_by=rating_id))
+
+    # Define relationship between ratings and movies
+    movie = db.relationship("Movie", backref=db.backref("ratings",
+                                                        order_by=rating_id))
+
 
     def __repr__(self):
         """Provide a human-readable representation of an instance of a rating."""

@@ -53,6 +53,7 @@ def load_movies():
 
         # Slice up to index -7, to leave off year and trailing space
         title = fields[1][:-7]
+        # title = title.decode("latin-1")
 
         # First store the date as a string.
         released_str = fields[2]
@@ -87,6 +88,9 @@ def load_ratings():
 
     for row in open("seed_data/u.data"):
         row = row.rstrip()
+
+        # We need four vars to unpack into, even though we don't care about 
+        # timestamp.
         user_id, movie_id, score, timestamp = row.split("\t")
         
         # Strings don't have to be converted into integers in Python if their
