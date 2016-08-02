@@ -23,6 +23,13 @@ class User(db.Model):
     age = db.Column(db.Integer, nullable=True)
     zipcode = db.Column(db.String(15), nullable=True)
 
+    def __repr__(self):
+        """Provide a human-readable representation of an instance of a user."""
+
+        return "<User user_id=%s email=%s password=%s age=%s zipcode=%s>" % \
+        (self.user_id, self.email, self.password, self.age, self.zipcode)
+
+
 class Movie(db.Model):
     """Movie object for ratings website."""
 
@@ -33,6 +40,13 @@ class Movie(db.Model):
     released_at = db.Column(db.DateTime, nullable=True)
     imdb_url = db.Column(db.String(128), nullable=True)
 
+    def __repr__(self):
+        """Provide a human-readable representation of an instance of a movie."""
+
+        return "<Movie movie_id=%s title=%s released_at=%s imdb_url=%s>" % \
+        (self.movie_id, self.title, self.released_at, self.imdb_url)
+
+
 class Rating(db.Model):
     """Rating object for ratings website."""
 
@@ -42,6 +56,13 @@ class Rating(db.Model):
     movie_id = db.Column(db.Integer, nullable=False)
     user_id = db.Column(db.Integer, nullable=False)
     score = db.Column(db.Integer, nullable=False)
+
+    def __repr__(self):
+        """Provide a human-readable representation of an instance of a rating."""
+
+        return "<Rating rating_id=%s movie_id=%s user_id=%s score=%s>" % \
+        (self.rating_id, self.movie_id, self.user_id, self.score)
+
 
 ##############################################################################
 # Helper functions
