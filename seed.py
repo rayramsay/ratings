@@ -3,7 +3,7 @@
 from sqlalchemy import func
 from model import User, Movie, Rating
 
-import datetime
+from datetime import datetime
 
 from model import connect_to_db, db
 from server import app
@@ -59,7 +59,7 @@ def load_movies():
 
         # If there was actually a date for this movie, parse it with datetime.
         if released_str:
-            released_at = datetime.datetime.strptime(released_str, "%d-%b-%Y")
+            released_at = datetime.strptime(released_str, "%d-%b-%Y")
         else:
             released_at = None
 
@@ -80,6 +80,24 @@ def load_movies():
 
 def load_ratings():
     """Load ratings from u.data into database."""
+
+    print "Ratings"
+
+    Rating.query.delete()
+
+    for row in open("seed_data/u.data"):
+        row = row.rstrip()
+        user_id, movie_id, score, timestamp = row.split("\t")
+        
+        # Strings don't have to be converted into integers in Python if their
+        # SQL data type is Integer.
+        rating = Rating(user_id=user_id,
+                        movie_id=movie_id,
+                        score=score)
+
+        db.session.add(rating)
+
+    db.session.commit()
 
 
 def set_val_user_id():
