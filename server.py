@@ -37,15 +37,43 @@ def user_list():
 
 @app.route('/register', methods=['GET'])
 def register_form():
-    """Displays the login/registration form."""
+    """Displays the registration form."""
 
     return render_template("register_form.html")
 
 @app.route('/register', methods=['POST'])
-# FIXME: Split registration and authentication into two routes. Right now,
-# mistyping your email creates a new user. The login form shouldn't be able
-# to create a new user.
 def handle_register():
+    """Handles input from registration form."""
+
+    email = request.form["email"]
+    password = request.form["password"]
+    age = request.form["age"]
+    zipcode = request.form["zipcode"]
+
+    user = User.query.filter(User.email == email).first()
+
+    if user:
+        flash("That email has already been registered.")
+        return redirect("/register")
+    else:
+        # If the user doesn't exist, create one.
+        user = User(email=email, password=password, age=age, zipcode=zipcode)
+        db.session.add(user)
+        db.session.commit()
+        flash("Account created. That's a great email. FOR A CLOWN.")
+        
+        #Code 307 should preserve type of request as POST.
+        return redirect("/login", code=307)
+
+
+@app.route('/login', methods=['GET'])
+def login_form():
+    """Displays the login form."""
+
+    return render_template("login_form.html")
+
+@app.route('/login', methods=['POST'])
+def handle_login():
     """Handles input from login/registration form."""
 
     email = request.form["email"]
@@ -56,20 +84,19 @@ def handle_register():
     if user:
         if password != user.password:
             flash("Way to enter the wrong password, CLOWN.")
-            return redirect("/register")
+            return redirect("/login")
+        else:
+            #add their user_id to session
+            session["user_id"] = user.user_id
+            print "\n\nSession:", session, "\n\n"
+            flash("You've been logged in. Not bad. For a CLOWN.")
+            return redirect("/")
+
     else:
-        # If the user doesn't exist, create one.
-        user = User(email=email, password=password)
-        db.session.add(user)
-        db.session.commit()
-        flash("Account created. That's a great username. FOR A CLOWN.")
+        flash("No account with that email exists.")
+        flash("Did you make a typo, CLOWN?")
+        return redirect("/login")
 
-    #add their user_id to session
-    session["user_id"] = user.user_id
-    print "\n\n\n\nSession", session, "\n\n\n\n"
-    flash("You've been logged in. Not bad. For a CLOWN.")
-
-    return redirect("/")
 
 @app.route('/logout')
 def logout():
