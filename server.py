@@ -31,8 +31,54 @@ def user_list():
     """Show list of users."""
 
     users = User.query.all()
-    
+
     return render_template("user_list.html", users=users)
+
+
+@app.route('/register', methods=['GET'])
+def register_form():
+    """Displays the login/registration form."""
+
+    return render_template("register_form.html")
+
+
+@app.route('/register', methods=['POST'])
+def handle_register():
+    """Handles input from login/registration form."""
+
+    email = request.form["email"]
+    password = request.form["password"]
+
+    user = User.query.filter(User.email == email).first()
+
+    if user:
+        if password != user.password:
+            flash("Way to enter the wrong password, CLOWN.")
+            return redirect("/register")
+    else:
+        # If the user doesn't exist, create one.
+        user = User(email=email, password=password)
+        db.session.add(user)
+        db.session.commit()
+        flash("Account created. That's a great username. FOR A CLOWN.")
+
+    #add their user_id to session
+    session["user_id"] = user.user_id
+    print "\n\n\n\nSession", session, "\n\n\n\n"
+    flash("You've been logged in. Not bad. For a CLOWN.")
+
+    return redirect("/")
+
+@app.route('/logout')
+def logout():
+
+    if "user_id" in session:
+        del session["user_id"]
+        flash("You've been logged out, CLOWN.")
+    print "\n\n\n\nSession", session, "\n\n\n\n"
+
+    return redirect("/")
+
 
 if __name__ == "__main__":
     # We have to set debug=True here, since it has to be True at the
