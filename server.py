@@ -41,8 +41,10 @@ def register_form():
 
     return render_template("register_form.html")
 
-
 @app.route('/register', methods=['POST'])
+# FIXME: Split registration and authentication into two routes. Right now,
+# mistyping your email creates a new user. The login form shouldn't be able
+# to create a new user.
 def handle_register():
     """Handles input from login/registration form."""
 
