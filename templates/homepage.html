@@ -14,8 +14,10 @@
 
 <p><a href="/register">Login or register to rate movies!</a></p>
 
+{% if "user_id" in session %}
 <form action="/logout">
 <input type="submit" value="Logout">
 </form>
+{% endif %}
 
 {% endblock %}
