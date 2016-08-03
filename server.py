@@ -28,11 +28,20 @@ def index():
 
 @app.route('/users')
 def user_list():
-    """Show list of users."""
+    """Show list of users, with links to detailed user pages."""
 
     users = User.query.all()
 
     return render_template("user_list.html", users=users)
+
+@app.route('/movies')
+def movie_list():
+    """Shows a list of movie titles, with links to detailed movie pages."""
+
+    # Fetch all movies from database, filter out unknown titles, and sort by title.
+    movies = Movie.query.filter(Movie.title != "").order_by(Movie.title).all()
+
+    return render_template("movie_list.html", movies=movies)
 
 
 @app.route('/register', methods=['GET'])
@@ -62,7 +71,7 @@ def handle_register():
         db.session.commit()
         flash("Account created. That's a great email. FOR A CLOWN.")
         
-        #Code 307 should preserve type of request as POST.
+        #Code 307 preserves the POST request, including form data.
         return redirect("/login", code=307)
 
 
