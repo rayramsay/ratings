@@ -56,8 +56,12 @@ class Rating(db.Model):
 
     # Make movie_id and user_id foreign keys, so we can create relationships
     # for ratings -> movies and ratings -> users.
-    movie_id = db.Column(db.Integer, db.ForeignKey("movies.movie_id"))
-    user_id = db.Column(db.Integer, db.ForeignKey("users.user_id"))
+    movie_id = db.Column(db.Integer,
+        db.ForeignKey("movies.movie_id"),
+        nullable=False)
+    user_id = db.Column(db.Integer,
+        db.ForeignKey("users.user_id"),
+        nullable=False)
 
     score = db.Column(db.Integer, nullable=False)
 

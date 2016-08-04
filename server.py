@@ -2,7 +2,7 @@
 
 from jinja2 import StrictUndefined
 
-from flask import Flask, render_template, redirect, request, flash, session
+from flask import Flask, render_template, redirect, request, flash, session, url_for
 #from flask_debugtoolbar import DebugToolbarExtension
 
 from model import User, Rating, Movie, connect_to_db, db
@@ -34,6 +34,19 @@ def user_list():
 
     return render_template("user_list.html", users=users)
 
+@app.route('/users/<user_id>')
+def user_details(user_id):
+    """Show a user's profile page."""
+
+    user = User.query.filter(User.user_id == user_id).first()
+    ratings = Rating.query.filter(Rating.user_id == user_id).all()
+    # ratings = Rating.query.options(db.joinedload('movie')).filter(Rating.user_id == user_id).order_by(Movie.title).all()
+    # FIXME: figure out how to sort movies by title
+
+    print ratings[0:11]
+
+    return render_template("user_details.html", user=user, ratings=ratings)
+
 @app.route('/movies')
 def movie_list():
     """Shows a list of movie titles, with links to detailed movie pages."""
@@ -42,7 +55,6 @@ def movie_list():
     movies = Movie.query.filter(Movie.title != "").order_by(Movie.title).all()
 
     return render_template("movie_list.html", movies=movies)
-
 
 @app.route('/register', methods=['GET'])
 def register_form():
@@ -99,7 +111,7 @@ def handle_login():
             session["user_id"] = user.user_id
             print "\n\nSession:", session, "\n\n"
             flash("You've been logged in. Not bad. For a CLOWN.")
-            return redirect("/")
+            return redirect(url_for('.user_details', user_id=user.user_id))
 
     else:
         flash("No account with that email exists.")
