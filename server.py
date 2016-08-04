@@ -25,6 +25,9 @@ def index():
 
     return render_template("homepage.html")
 
+####################################################
+# User-related routes
+####################################################
 
 @app.route('/users')
 def user_list():
@@ -47,6 +50,10 @@ def user_details(user_id):
 
     return render_template("user_details.html", user=user, ratings=ratings)
 
+####################################################
+# Movie-related routes
+####################################################
+
 @app.route('/movies')
 def movie_list():
     """Shows a list of movie titles, with links to detailed movie pages."""
@@ -55,6 +62,19 @@ def movie_list():
     movies = Movie.query.filter(Movie.title != "").order_by(Movie.title).all()
 
     return render_template("movie_list.html", movies=movies)
+
+@app.route('/movies/<movie_id>')
+def movie_details(movie_id):
+    """Shows a movie's information, including ratings."""
+
+    movie = Movie.query.filter(Movie.movie_id == movie_id).first()
+    ratings = Rating.query.filter(Rating.movie_id == movie_id).all()
+
+    return render_template("movie_details.html", movie=movie, ratings=ratings)
+
+####################################################
+# Registration routes
+####################################################
 
 @app.route('/register', methods=['GET'])
 def register_form():
@@ -86,6 +106,9 @@ def handle_register():
         #Code 307 preserves the POST request, including form data.
         return redirect("/login", code=307)
 
+####################################################
+# Authentication/Deauthentication routes
+####################################################
 
 @app.route('/login', methods=['GET'])
 def login_form():
