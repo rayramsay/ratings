@@ -15,6 +15,24 @@
     </li>
 </ul>
 
+{% if "user_id" in session %}
+
+    {% if user_rating %}
+
+    <h3>Your Rating: {{ user_rating.score }}</h3>
+
+    <p><a href="/update-rating">Update your rating.</a></p>
+
+    {% else %}
+
+    <p><a href="/update-rating">Click here to rate {{ movie.title}}.</a></p>
+
+    {% endif %}
+
+{% endif %}
+
+<h3>Ratings from Clowns</h3>
+
 <ul>
     {% for rating in ratings %}
     <li>

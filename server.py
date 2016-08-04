@@ -70,7 +70,27 @@ def movie_details(movie_id):
     movie = Movie.query.filter(Movie.movie_id == movie_id).first()
     ratings = Rating.query.filter(Rating.movie_id == movie_id).all()
 
-    return render_template("movie_details.html", movie=movie, ratings=ratings)
+    if "user_id" in session:
+        user_rating = Rating.query.filter(Rating.movie_id == movie_id, Rating.user_id == session["user_id"]).first()
+    else:
+        user_rating = None
+
+    return render_template("movie_details.html",
+        movie=movie,
+        ratings=ratings,
+        user_rating=user_rating)
+
+####################################################
+# Rating routes
+####################################################
+
+@app.route('/update-rating', methods=['GET'])
+def rating_form():
+    """Displays the rating form."""
+
+    return render_template("rating_form.html")
+
+#FIXME: add form handling
 
 ####################################################
 # Registration routes
