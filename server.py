@@ -7,7 +7,6 @@ from flask import Flask, render_template, redirect, request, flash, session, url
 
 from model import User, Rating, Movie, connect_to_db, db
 
-
 app = Flask(__name__)
 
 # Required to use Flask sessions and the debug toolbar
@@ -88,26 +87,26 @@ def movie_details(movie_id):
 def rating_form():
     """Displays the rating form."""
 
-    user_id = session["user_id"]
-    print user_id
+    user_id = session.get("user_id")
     movie_id = request.args.get("movie_id")
-    print movie_id
     movie = Movie.query.filter(Movie.movie_id == movie_id).first()
-    print movie
     rating = Rating.query.filter(Rating.movie_id == movie_id, 
                                  Rating.user_id == user_id).first()
-    print rating
-
-    return render_template("rating_form.html", movie=movie, rating=rating)
+    
+    if movie_id is None:
+        flash("You need to rate a specific movie.")
+        return redirect('/')
+    else:
+        return render_template("rating_form.html", movie=movie, rating=rating)
 
 @app.route('/update-rating', methods=['POST'])
 def handle_rating():
     """Handles input from rating form."""
 
     # Get the values needed to create a rating.
-    movie_id = request.form["movie_id"]
-    score = request.form["score"]
-    user_id = session["user_id"]
+    movie_id = request.form.get("movie_id")
+    score = request.form.get("score")
+    user_id = session.get("user_id")
 
     # Fetch a rating record.
     rating = Rating.query.filter(Rating.movie_id == movie_id, 
@@ -143,10 +142,10 @@ def register_form():
 def handle_register():
     """Handles input from registration form."""
 
-    email = request.form["email"]
-    password = request.form["password"]
-    age = request.form["age"]
-    zipcode = request.form["zipcode"]
+    email = request.form.get("email")
+    password = request.form.get("password")
+    age = request.form.get("age")
+    zipcode = request.form.get("zipcode")
 
     user = User.query.filter(User.email == email).first()
 
@@ -177,8 +176,8 @@ def login_form():
 def handle_login():
     """Handles input from login/registration form."""
 
-    email = request.form["email"]
-    password = request.form["password"]
+    email = request.form.get("email")
+    password = request.form.get("password")
 
     user = User.query.filter(User.email == email).first()
 
