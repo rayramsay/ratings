@@ -88,9 +88,46 @@ def movie_details(movie_id):
 def rating_form():
     """Displays the rating form."""
 
-    return render_template("rating_form.html")
+    user_id = session["user_id"]
+    print user_id
+    movie_id = request.args.get("movie_id")
+    print movie_id
+    movie = Movie.query.filter(Movie.movie_id == movie_id).first()
+    print movie
+    rating = Rating.query.filter(Rating.movie_id == movie_id, 
+                                 Rating.user_id == user_id).first()
+    print rating
 
-#FIXME: add form handling
+    return render_template("rating_form.html", movie=movie, rating=rating)
+
+@app.route('/update-rating', methods=['POST'])
+def handle_rating():
+    """Handles input from rating form."""
+
+    # Get the values needed to create a rating.
+    movie_id = request.form["movie_id"]
+    score = request.form["score"]
+    user_id = session["user_id"]
+
+    # Fetch a rating record.
+    rating = Rating.query.filter(Rating.movie_id == movie_id, 
+                                 Rating.user_id == user_id).first()
+   
+    # If the fetched rating record exists, update it with new rating.
+    if rating:
+        rating.score = score
+        db.session.commit()
+        flash("Your rating has been updated, indecisive CLOWN.")
+
+    # If the rating record doesn't exist, create a new rating in the database.
+    else:
+        rating = Rating(movie_id=movie_id, user_id=user_id, score=score)
+        db.session.add(rating)
+        db.session.commit()
+        flash("Thanks for rating. LIKE A CLOWN.")
+
+    return redirect(url_for('.movie_details', movie_id=movie_id))
+
 
 ####################################################
 # Registration routes

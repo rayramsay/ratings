@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block title %}Rate {{ movie.title }}{% endblock %}
+
+{% block content %}
+
+<h2>Rate {{ movie.title }}</h2>
+
+<form action="/update-rating" method="POST">
+
+    {% if rating != None %}
+    <label for="score">Rating: </label><input type="number" min="1" max="5" name="score" id="score" value="{{ rating.score }}">
+    {% else %}
+    <label for="score">Rating: </label><input type="number" min="1" max="5" name="score" id="score">
+    {% endif %}
+
+    <input type="hidden" name="movie_id" id="movie_id" value="{{ movie.movie_id }}">
+
+    <input type="submit" value="Rate!">
+</form>
+
+{% endblock %}

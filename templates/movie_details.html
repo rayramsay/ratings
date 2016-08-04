@@ -21,11 +21,11 @@
 
     <h3>Your Rating: {{ user_rating.score }}</h3>
 
-    <p><a href="/update-rating">Update your rating.</a></p>
+    <p><a href="/update-rating?movie_id={{ movie.movie_id }}">Update your rating.</a></p>
 
     {% else %}
 
-    <p><a href="/update-rating">Click here to rate {{ movie.title}}.</a></p>
+    <p><a href="/update-rating?movie_id={{ movie.movie_id }}">Click here to rate {{ movie.title }}.</a></p>
 
     {% endif %}
 
