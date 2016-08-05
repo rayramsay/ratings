@@ -21,13 +21,17 @@
 
     {% if user_rating %}
 
-    <h3>Your Rating: {{ user_rating.score }}</h3>
+    <p>Your Rating: {{ user_rating.score }}</p>
+
+    <h3>{{ beratement }}</h3>
 
     <p><a href="/update-rating?movie_id={{ movie.movie_id }}">Update your rating.</a></p>
 
     {% else %}
 
-    <p>I, The Judgy Eye, predict you will rate this movie {{ prediction }}. CLOWN. </p>
+    <p>Predicted Rating: {{ prediction }}</p>
+
+    <h3>{{ beratement }}</h3>
 
     <p><a href="/update-rating?movie_id={{ movie.movie_id }}">Click here to rate {{ movie.title }}.</a></p>
 
