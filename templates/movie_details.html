@@ -15,6 +15,8 @@
     </li>
 </ul>
 
+<p> Average rating: {{ average }} </p>
+
 {% if "user_id" in session %}
 
     {% if user_rating %}
@@ -25,20 +27,12 @@
 
     {% else %}
 
+    <p>I, The Judgy Eye, predict you will rate this movie {{ prediction }}. CLOWN. </p>
+
     <p><a href="/update-rating?movie_id={{ movie.movie_id }}">Click here to rate {{ movie.title }}.</a></p>
 
     {% endif %}
 
 {% endif %}
-
-<h3>Ratings from Clowns</h3>
-
-<ul>
-    {% for rating in ratings %}
-    <li>
-        {{ rating.user.email }} {{ rating.score }}
-    </li>
-    {% endfor %}
-</ul>
 
 {% endblock %}

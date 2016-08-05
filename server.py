@@ -36,7 +36,7 @@ def user_list():
 
     return render_template("user_list.html", users=users)
 
-@app.route('/users/<user_id>')
+@app.route('/users/<int:user_id>')
 def user_details(user_id):
     """Show a user's profile page."""
 
@@ -62,22 +62,40 @@ def movie_list():
 
     return render_template("movie_list.html", movies=movies)
 
-@app.route('/movies/<movie_id>')
+@app.route('/movies/<int:movie_id>')
 def movie_details(movie_id):
-    """Shows a movie's information, including ratings."""
+    """Shows a movie's information, including ratings.
 
-    movie = Movie.query.filter(Movie.movie_id == movie_id).first()
-    ratings = Rating.query.filter(Rating.movie_id == movie_id).all()
+    If a user is logged in, they can add or edit a rating."""
 
-    if "user_id" in session:
-        user_rating = Rating.query.filter(Rating.movie_id == movie_id, Rating.user_id == session["user_id"]).first()
+    movie = Movie.query.get(movie_id)
+    user_id = session.get("user_id")
+
+    if user_id:
+        user_rating = Rating.query.filter_by(
+            movie_id=movie_id, user_id=user_id).first()
     else:
         user_rating = None
 
+    # Get average rating of movie
+
+    rating_scores = [r.score for r in movie.ratings]
+    avg_rating = round((float(sum(rating_scores)) / len(rating_scores)),2)
+
+    prediction = None
+
+    # Prediction code: only predict if the user hasn't rating it.
+
+    if (not user_rating) and user_id:
+        user = User.query.get(user_id)
+        if user:
+            prediction = round(user.predict_rating(movie),2)
+
     return render_template("movie_details.html",
-        movie=movie,
-        ratings=ratings,
-        user_rating=user_rating)
+                            movie=movie,
+                            user_rating=user_rating,
+                            average=avg_rating,
+                            prediction=prediction)
 
 ####################################################
 # Rating routes
